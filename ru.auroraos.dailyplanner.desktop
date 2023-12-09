@@ -1,0 +1,13 @@
+[Desktop Entry]
+Type=Application
+X-Nemo-Application-Type=silica-qt5
+Icon=ru.auroraos.dailyplanner
+Exec=/usr/bin/ru.auroraos.dailyplanner
+Name=Daily Planner
+Name[ru]=Ежедневник
+
+[X-Application]
+Permissions=PushNotifications;MediaIndexing;UserDirs
+OrganizationName=ru.auroraos
+ApplicationName=dailyplanner
+ExecDBus=/usr/bin/ru.auroraos.dailyplanner
