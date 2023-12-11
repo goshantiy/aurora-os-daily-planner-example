@@ -1,3 +1,5 @@
+
+
 /*******************************************************************************
 **
 ** Copyright (C) 2022 ru.auroraos
@@ -34,7 +36,6 @@
 ** EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 **
 *******************************************************************************/
-
 import QtQuick 2.0
 import Sailfish.Silica 1.0
 
@@ -45,8 +46,11 @@ CoverBackground {
         objectName: "placeholder"
         text: qsTr("Daily Planner")
         icon {
-            source: Qt.resolvedUrl("../icons/dailyplanner.svg")
-            sourceSize { width: icon.width; height: icon.height }
+            //            source: Qt.resolvedUrl("../icons/dailyplanner.svg")
+            sourceSize {
+                width: icon.width
+                height: icon.height
+            }
         }
         forceFit: true
     }

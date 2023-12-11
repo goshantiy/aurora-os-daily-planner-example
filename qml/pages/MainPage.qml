@@ -1,3 +1,5 @@
+
+
 /*******************************************************************************
 **
 ** Copyright (C) 2022 ru.auroraos
@@ -34,7 +36,6 @@
 ** EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 **
 *******************************************************************************/
-
 import QtQuick 2.0
 import Sailfish.Silica 1.0
 import QtQuick.Layouts 1.1
@@ -43,31 +44,31 @@ Page {
     objectName: "mainPage"
     allowedOrientations: Orientation.All
     ColumnLayout {
-            anchors.fill: parent
-
-            PageHeader {
-                Layout.alignment: Qt.AlignTop
-                objectName: "pageHeader"
-                title: qsTr("Daily Planner")
-                extraContent.children: [
-                    IconButton {
-                        objectName: "aboutButton"
-                        icon.source: "image://theme/icon-m-about"
-                        anchors.verticalCenter: parent.verticalCenter
-
-                        onClicked: pageStack.push(Qt.resolvedUrl("AboutPage.qml"))
-                    }
-                ]
-            }
-
-            DatePicker {
-                id: calendar
-                Layout.alignment: Qt.AlignHCenter
-            }
-            PlannerView
-            {
-                Layout.alignment: Qt.AlignBottom
-                Layout.preferredHeight: parent.width/2
-            }
+        anchors.fill: parent
+        PageHeader {
+            Layout.alignment: Qt.AlignTop
+            objectName: "pageHeader"
+            title: qsTr("Daily Planner")
+            extraContent.children: [
+                IconButton {
+                    objectName: "aboutButton"
+                    icon.source: "image://theme/icon-m-about"
+                    anchors.verticalCenter: parent.verticalCenter
+                    onClicked: pageStack.push(Qt.resolvedUrl("AboutPage.qml"))
+                },
+                IconButton {
+                    objectName: "add"
+                    icon.source: "image://theme/icon-cover-new"
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.verticalCenter: parent.verticalCenter
+                    onClicked: pageStack.push(Qt.resolvedUrl("AboutPage.qml"))
+                }
+            ]
         }
+        PlannerView {
+            clip: true
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+        }
+    }
 }

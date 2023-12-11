@@ -4,10 +4,19 @@
 #include <QAbstractListModel>
 #include <QObject>
 #include <QDateTime>
-
+    enum Priority
+    {
+    Lowest,
+    Low,
+    Medium,
+    High,
+    Highest
+    };
 class ReminderModel : public QAbstractListModel
 {
     Q_OBJECT
+
+
 
 public:
     enum ReminderRoles {
@@ -18,9 +27,7 @@ public:
 
     explicit ReminderModel(QObject *parent = nullptr);
 
-    void addReminder(const QString &task, const QDateTime &date = QDateTime::currentDateTime(), const QString &priority = "test");
-
-    // QAbstractItemModel interface
+    void addReminder(const QString &task, Priority priority = Priority::Lowest, const QDateTime &date = QDateTime::currentDateTime());
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
     QHash<int, QByteArray> roleNames() const override;
@@ -29,11 +36,13 @@ private:
     struct Reminder {
         QString task;
         QDateTime date;
-        QString priority;
+        Priority priority;
         // Add more properties as needed
     };
 
+
     QList<Reminder> m_reminders;
 };
+
 
 #endif // REMINDERMODEL_H

@@ -5,7 +5,7 @@ ReminderModel::ReminderModel(QObject *parent)
 {
 }
 
-void ReminderModel::addReminder(const QString &task, const QDateTime &date, const QString &priority)
+void ReminderModel::addReminder(const QString &task, Priority priority, const QDateTime &date)
 {
     beginInsertRows(QModelIndex(), rowCount(), rowCount());
     m_reminders.append({task, date, priority});

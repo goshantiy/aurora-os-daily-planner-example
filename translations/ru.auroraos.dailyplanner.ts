@@ -42,7 +42,7 @@
 <context>
     <name>DefaultCoverPage</name>
     <message>
-        <location filename="../qml/cover/DefaultCoverPage.qml" line="46"/>
+        <location filename="../qml/cover/DefaultCoverPage.qml" line="47"/>
         <source>Daily Planner</source>
         <translation>Daily Planner</translation>
     </message>
@@ -52,7 +52,7 @@
     <message>
         <location filename="../qml/pages/MainPage.qml" line="51"/>
         <source>Daily Planner</source>
-        <translation>Daily Planner</translation>
+        <translation type="unfinished">Daily Planner</translation>
     </message>
 </context>
 </TS>

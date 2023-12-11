@@ -54,7 +54,6 @@ HEADERS += \
     src/remindermodel.h
 
 DISTFILES += \
-    qml/pages/DailyPlanner.qml \
     qml/pages/PlannerView.qml \
     rpm/ru.auroraos.dailyplanner.spec \
     AUTHORS.md \
@@ -74,3 +73,6 @@ CONFIG += auroraapp_i18n
 TRANSLATIONS += \
     translations/ru.auroraos.dailyplanner.ts \
     translations/ru.auroraos.dailyplanner-ru.ts \
+
+RESOURCES += \
+    icons.qrc
