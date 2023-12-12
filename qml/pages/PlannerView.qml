@@ -40,12 +40,11 @@ SilicaListView {
                 wrapMode: Label.WordWrap
             }
             RowLayout {
-                Label {
+                Text {
                     text: model.date.toLocaleString()
                     color: "white"
                     font.pixelSize: 24
                     font.family: "OpenSans"
-                    wrapMode: Label.WordWrap
                 }
             }
         }
