@@ -1,39 +1,98 @@
 #include "remindermodel.h"
+#include <QSqlQuery>
+#include <QDebug>
+/// TO DO
+/// QML INTEGRATION
+/// APPLICATION FOR USING THIS COMPONENTS
+/// TAGS
 
-ReminderModel::ReminderModel(QObject *parent)
-    : QAbstractListModel(parent)
+using namespace DailyPlanner;
+
+ReminderModel::ReminderModel(DatabaseManager *manager, const QSqlDatabase &db, QObject *parent) :
+    QSqlTableModel(parent, db), _manager(manager)
 {
+    setTable("reminders");
+    sortByPriority(Qt::AscendingOrder);
+    //select();
 }
 
-void ReminderModel::addReminder(const QString &task, Priority priority, const QDateTime &date)
+void ReminderModel::addReminder(const QString &task,
+                                const QString &description,
+                                const QString &date,
+                                const QTime &time,
+                                const int &priority,
+                                const QString &tag)
 {
-    beginInsertRows(QModelIndex(), rowCount(), rowCount());
-    m_reminders.append({task, date, priority});
-    endInsertRows();
+    QDate dateFromStr = QDate::fromString(date, "dd MMM yyyy");
+    _manager->addReminder(
+     { task, description, dateFromStr, time, static_cast<Priority>(priority), { tag, "gray" } });
+    sortByPriority(Qt::DescendingOrder);
 }
 
-int ReminderModel::rowCount(const QModelIndex &parent) const
+void ReminderModel::sortByDate(const QString &dateStr)
 {
-    if (parent.isValid())
-        return 0;
+    setFilter(QString("Date='%1'").arg(dateStr));
+    select();
+}
 
-    return m_reminders.size();
+void ReminderModel::sortByPriority(Qt::SortOrder order)
+{
+    QSqlQuery query;
+    if (order == Qt::AscendingOrder)
+        query.prepare("SELECT * FROM reminders ORDER BY priority ASC");
+    else
+        query.prepare("SELECT * FROM reminders ORDER BY priority DSC");
+    if (query.exec()) {
+        setQuery(query);
+        return;
+    }
+}
+
+void ReminderModel::filterByPriority(Priority priority)
+{
+    setFilter(QString("Priority='%1'").arg(QString::number(priority)));
+    select();
+}
+QColor ReminderModel::mapPriorityToColor(const Priority priority) const
+{
+    switch (priority) {
+    case Lowest:
+        return QColor(0, 255, 0); // Green
+    case Low:
+        return QColor(173, 216, 230); // Light Blue
+    case Medium:
+        return QColor(255, 255, 0); // Yellow
+    case High:
+        return QColor(255, 165, 0); // Orange
+    case Highest:
+        return QColor(255, 0, 0); // Red
+    default:
+        return QColor(255, 255, 255, 255); // Default to white
+    }
 }
 
 QVariant ReminderModel::data(const QModelIndex &index, int role) const
 {
-    if (!index.isValid())
-        return QVariant();
+    if (role < Qt::UserRole)
+        return QSqlTableModel::data(index, role);
 
-    const Reminder &reminder = m_reminders.at(index.row());
+    QSqlRecord record = QSqlTableModel::record(index.row());
 
     switch (role) {
     case TaskRole:
-        return reminder.task;
+        return record.value("taskname");
     case DateRole:
-        return reminder.date;
+        return record.value("date");
+    case TimeRole:
+        return record.value("time");
+    case DescriptionRole:
+        return record.value("description");
+    case TagRole:
+        return record.value("tag_name");
+    case TagColor:
+        return record.value("tag_color");
     case PriorityRole:
-        return reminder.priority;
+        return mapPriorityToColor(record.value("priority").value<Priority>());
     default:
         return QVariant();
     }
@@ -45,5 +104,9 @@ QHash<int, QByteArray> ReminderModel::roleNames() const
     roles[TaskRole] = "task";
     roles[DateRole] = "date";
     roles[PriorityRole] = "priority";
+    roles[TimeRole] = "time";
+    roles[DescriptionRole] = "description";
+    roles[TagRole] = "tag_name";
+    roles[TagColor] = "tag_color";
     return roles;
 }

@@ -32,22 +32,6 @@
     </message>
 </context>
 <context>
-    <name>AddTask</name>
-    <message>
-        <location filename="../qml/pages/AddTask.qml" line="14"/>
-        <source>Add task</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>DailyPlanner</name>
-    <message>
-        <location filename="../qml/pages/DailyPlanner.qml" line="6"/>
-        <source>Daily planner</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>DefaultCoverPage</name>
     <message>
         <location filename="../qml/cover/DefaultCoverPage.qml" line="47"/>
@@ -58,7 +42,7 @@
 <context>
     <name>MainPage</name>
     <message>
-        <location filename="../qml/pages/MainPage.qml" line="14"/>
+        <location filename="../qml/pages/MainPage.qml" line="13"/>
         <source>Daily Planner</source>
         <translation type="unfinished">Ежедневник</translation>
     </message>

@@ -10,15 +10,27 @@ Page {
         spacing: 10
         PageHeader {
             Layout.alignment: Qt.AlignTop
+            Layout.fillWidth: true
             objectName: "pageHeader"
-            title: qsTr("Add task")
+            extraContent.children: [
+                Button {
+                    anchors.right: parent.right
+                    anchors.verticalCenter: parent.verticalCenter
+                    text: "Add task"
+                    onClicked: ReminderModel.addReminder(
+                                   taskName.text, taskDescription.text,
+                                   buttondate.text, buttontime.text,
+                                   priorityCb.currentIndex, tag.text)
+                }
+            ]
         }
 
         Rectangle {
             Layout.alignment: Qt.AlignTop
             Layout.preferredHeight: 100
             Layout.fillWidth: true
-            TextEdit {
+            color: "transparent"
+            TextField {
                 anchors.fill: parent
                 id: taskName
                 property string placeholderText: "Task name"
@@ -33,7 +45,8 @@ Page {
             Layout.alignment: Qt.AlignTop
             Layout.preferredHeight: 100
             Layout.fillWidth: true
-            TextEdit {
+            color: "transparent"
+            TextField {
                 anchors.fill: parent
                 id: taskDescription
                 property string placeholderText: "Task description"
@@ -44,7 +57,81 @@ Page {
                 }
             }
         }
+        RowLayout {
+            Rectangle {
+                Layout.alignment: Qt.AlignLeft
+                Layout.preferredHeight: 100
+                Layout.fillWidth: true
+                color: "transparent"
+                TextField {
+                    anchors.fill: parent
+                    id: tag
+                    property string placeholderText: "Tag"
+                    Text {
+                        text: tag.placeholderText
+                        color: "#aaa"
+                        visible: !tag.text
+                    }
+                }
+            }
+            Button {
+                id: buttoncolor
+                text: "Color"
+                Layout.alignment: Qt.AlignRight
+                Layout.fillWidth: true
+                onClicked: {
+                    var dialog = pageStack.push(colorpickerComponent, {})
+                    dialog.accepted.connect(function () {
+                        color = dialog.color
+                    })
+                }
+
+                Component {
+                    id: colorpickerComponent
+                    ColorPickerDialog {}
+                }
+            }
+        }
+        RowLayout {
+            Button {
+                id: buttondate
+                text: "Date"
+                Layout.alignment: Qt.AlignLeft
+                Layout.fillWidth: true
+                onClicked: {
+                    var dialog = pageStack.push(datepickerComponent, {
+                                                    "date": new Date(buttondate.text)
+                                                })
+                    dialog.accepted.connect(function () {
+                        buttondate.text = dialog.dateText
+                    })
+                }
+
+                Component {
+                    id: datepickerComponent
+                    DatePickerDialog {}
+                }
+            }
+            Button {
+                id: buttontime
+                text: "Time"
+                Layout.alignment: Qt.AlignRight
+                Layout.fillWidth: true
+                onClicked: {
+                    var dialog = pageStack.push(timepickerComponent)
+                    dialog.accepted.connect(function () {
+                        buttontime.text = dialog.timeText
+                    })
+                }
+
+                Component {
+                    id: timepickerComponent
+                    TimePickerDialog {}
+                }
+            }
+        }
         ComboBox {
+            id: priorityCb
             label: "Priority"
             Layout.alignment: Qt.AlignTop
             menu: ContextMenu {
@@ -69,11 +156,6 @@ Page {
             color: "transparent"
             Layout.fillWidth: true
             Layout.fillHeight: true
-        }
-
-        IconButton {
-            Layout.alignment: Qt.AlignHCenter
-            icon.source: "image://theme/icon-l-add"
         }
     }
 }

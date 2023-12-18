@@ -45,12 +45,15 @@ CONFIG += \
 PKGCONFIG += \
 
 SOURCES += \
+    src/dailyplannerapp.cpp \
     src/databasemanager.cpp \
     src/main.cpp \
     src/remindermodel.cpp
 
 HEADERS += \
+    src/dailyplannerapp.h \
     src/databasemanager.h \
+    src/global.h \
     src/remindermodel.h
 
 DISTFILES += \

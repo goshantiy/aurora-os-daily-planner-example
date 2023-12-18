@@ -29,14 +29,14 @@ Page {
         }
         Button {
             id: button
-            text: Qt.formatDate(new Date,"dd MMM yyyy")
+            text: Qt.formatDate(new Date, "dd MMM yyyy")
             Layout.alignment: Qt.AlignHCenter
 
             onClicked: {
                 var dialog = pageStack.push(pickerComponent, {
-                            date: new Date(button.text)
-                        })
-                dialog.accepted.connect(function() {
+                                                "date": new Date(button.text)
+                                            })
+                dialog.accepted.connect(function () {
                     button.text = dialog.dateText
                 })
             }
