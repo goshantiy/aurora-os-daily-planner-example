@@ -17,17 +17,23 @@ Page {
                     anchors.right: parent.right
                     anchors.verticalCenter: parent.verticalCenter
                     text: "Add task"
-                    onClicked: ReminderModel.addReminder(
-                                   taskName.text, taskDescription.text,
-                                   buttondate.text, buttontime.text,
-                                   priorityCb.currentIndex, tag.text)
+                    onClicked: {
+                        ReminderModel.addReminder(taskName.text,
+                                                  taskDescription.text,
+                                                  buttondate.text,
+                                                  buttontime.text,
+                                                  priorityCb.currentIndex,
+                                                  tag.text,
+                                                  buttoncolor.backgroundColor)
+                        pageStack.pop()
+                    }
                 }
             ]
         }
 
         Rectangle {
             Layout.alignment: Qt.AlignTop
-            Layout.preferredHeight: 100
+            Layout.preferredHeight: 110
             Layout.fillWidth: true
             color: "transparent"
             TextField {
@@ -43,7 +49,7 @@ Page {
         }
         Rectangle {
             Layout.alignment: Qt.AlignTop
-            Layout.preferredHeight: 100
+            Layout.preferredHeight: 110
             Layout.fillWidth: true
             color: "transparent"
             TextField {
@@ -60,7 +66,7 @@ Page {
         RowLayout {
             Rectangle {
                 Layout.alignment: Qt.AlignLeft
-                Layout.preferredHeight: 100
+                Layout.preferredHeight: 130
                 Layout.fillWidth: true
                 color: "transparent"
                 TextField {
@@ -76,13 +82,13 @@ Page {
             }
             Button {
                 id: buttoncolor
-                text: "Color"
+                text: "Tag color"
+                Layout.preferredHeight: 100
                 Layout.alignment: Qt.AlignRight
-                Layout.fillWidth: true
                 onClicked: {
                     var dialog = pageStack.push(colorpickerComponent, {})
                     dialog.accepted.connect(function () {
-                        color = dialog.color
+                        backgroundColor = dialog.color
                     })
                 }
 
@@ -90,6 +96,10 @@ Page {
                     id: colorpickerComponent
                     ColorPickerDialog {}
                 }
+            }
+            Rectangle {
+                width: 20
+                color: "transparent"
             }
         }
         RowLayout {

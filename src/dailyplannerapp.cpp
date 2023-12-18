@@ -5,6 +5,7 @@ DailyPlannerApp::DailyPlannerApp(QObject *parent) : QObject(parent)
 {
     _manager = new DatabaseManager(this);
     _manager->openDatabase();
+//    _manager->clearRemindersTable();
     _model = new ReminderModel(_manager, _manager->database(), this);
 }
 

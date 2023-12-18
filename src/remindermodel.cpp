@@ -12,8 +12,7 @@ ReminderModel::ReminderModel(DatabaseManager *manager, const QSqlDatabase &db, Q
     QSqlTableModel(parent, db), _manager(manager)
 {
     setTable("reminders");
-    sortByPriority(Qt::AscendingOrder);
-    //select();
+    sortByPriority(Qt::DescendingOrder);
 }
 
 void ReminderModel::addReminder(const QString &task,
@@ -21,11 +20,12 @@ void ReminderModel::addReminder(const QString &task,
                                 const QString &date,
                                 const QTime &time,
                                 const int &priority,
-                                const QString &tag)
+                                const QString &tag,
+                                const QColor& color)
 {
     QDate dateFromStr = QDate::fromString(date, "dd MMM yyyy");
     _manager->addReminder(
-     { task, description, dateFromStr, time, static_cast<Priority>(priority), { tag, "gray" } });
+     { task, description, dateFromStr, time, static_cast<Priority>(priority), { tag, color } });
     sortByPriority(Qt::DescendingOrder);
 }
 
@@ -41,7 +41,7 @@ void ReminderModel::sortByPriority(Qt::SortOrder order)
     if (order == Qt::AscendingOrder)
         query.prepare("SELECT * FROM reminders ORDER BY priority ASC");
     else
-        query.prepare("SELECT * FROM reminders ORDER BY priority DSC");
+        query.prepare("SELECT * FROM reminders ORDER BY priority DESC");
     if (query.exec()) {
         setQuery(query);
         return;

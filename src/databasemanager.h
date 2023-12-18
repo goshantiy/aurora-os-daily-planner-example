@@ -20,6 +20,7 @@ namespace DailyPlanner {
 
         const QSqlDatabase &database() const;
 
+        bool clearRemindersTable();
     private:
         QSqlDatabase _database;
     };

@@ -34,7 +34,8 @@ namespace DailyPlanner {
                          const QString &date = QDate::currentDate().toString(),
                          const QTime &time = QTime::currentTime(),
                          const int &priority = 0,
-                         const QString &tag = {});
+                         const QString &tag = {},
+                         const QColor &color = "gray");
         //        int rowCount(const QModelIndex &parent = QModelIndex()) const override;
         QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
         QHash<int, QByteArray> roleNames() const override;

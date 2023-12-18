@@ -68,6 +68,19 @@ bool DatabaseManager::addReminder(const Reminder &reminder)
     return true;
 }
 
+bool DatabaseManager::clearRemindersTable()
+{
+    QSqlQuery query;
+
+    if (query.exec("DELETE FROM reminders")) {
+        qDebug() << "Successfully cleared the reminders table.";
+        return true;
+    } else {
+        qWarning() << "Error clearing the reminders table:" << query.lastError().text();
+        return false;
+    }
+}
+
 QList<QVariantMap> DatabaseManager::getAllReminders()
 {
     QList<QVariantMap> reminders;

@@ -16,19 +16,6 @@ SilicaListView {
         anchors.horizontalCenter: parent.horizontalCenter
         color: model.priority
 
-        //        objectName: "infoLabel"
-        //        wrapMode: Text.Wrap
-        //        horizontalAlignment: Text.AlignHCenter
-        //        color: palette.secondaryHighlightColor
-        //        font {
-        //            pixelSize: Theme.fontSizeExtraLarge
-        //            family: Theme.fontFamilyHeading
-        //        }
-        //        anchors {
-        //            left: parent.left; right: parent.right
-        //            margins: Theme.horizontalPageMargin
-        //        }
-        //    }
         ColumnLayout {
             Label {
                 topPadding: 10
@@ -52,10 +39,6 @@ SilicaListView {
                     Layout.preferredHeight: 25
                     color: model.tag_color
                     radius: 3
-                    //                    Text {
-                    //                        text: model.tag_name
-                    //                        font.pointSize: 15
-                    //                    }
                 }
                 Label {
                     text: model.description
