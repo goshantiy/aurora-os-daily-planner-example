@@ -22,13 +22,21 @@ namespace DailyPlanner {
             PriorityRole,
             TagRole,
             TagColor,
-            Completed
+            Completed,
+            Id
         };
 
     public:
         explicit ReminderModel(DatabaseManager *manager,
                                const QSqlDatabase &db,
                                QObject *parent = nullptr);
+
+        QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
+        QHash<int, QByteArray> roleNames() const override;
+        void sortByPriority(Qt::SortOrder order);
+        void sortByField(Qt::SortOrder order, int field);
+        void filterByField(const QString &field, const QVariant &value);
+
         Q_INVOKABLE
         void addReminder(const QString &taskname,
                          const QString &description = {},
@@ -37,16 +45,21 @@ namespace DailyPlanner {
                          const int &priority = 0,
                          const QString &tag = {},
                          const QColor &color = "gray");
-        QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
-        QHash<int, QByteArray> roleNames() const override;
-        void sortByPriority(Qt::SortOrder order);
-        void sortByField(Qt::SortOrder order, int field);
-        void filterByField(const QString &field, const QVariant &value);
 
         Q_INVOKABLE void filterByPriorityAndDate(Priority priority, const QDate &date);
-        void applyFilters();
+
+        Q_INVOKABLE void updateReminder(int id,
+                                        const QString &task,
+                                        const QString &description,
+                                        const QString &date,
+                                        const QTime &time,
+                                        const int &priority,
+                                        const QString &tag,
+                                        const QColor &color);
+        Q_INVOKABLE void setCompleted(int id, bool completed);
 
     private:
+        void applyFilters();
         QStringList _currentFilters;
         DatabaseManager *_manager { nullptr };
         QColor mapPriorityToColor(Priority priority) const;

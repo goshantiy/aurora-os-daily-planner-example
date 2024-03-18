@@ -11,11 +11,14 @@ ReminderModel::ReminderModel(DatabaseManager *manager, const QSqlDatabase &db, Q
     // Установка таблицы для модели
     setTable("reminders");
 
-    // Сортировка по приоритету в порядке убывания при создании модели
+    qDebug() << _manager->getAllReminders();
+
+    //     Сортировка по приоритету в порядке убывания при создании модели
     sortByPriority(Qt::DescendingOrder);
 
     // Фильтрация по приоритету All и текущей дате при создании модели
     filterByPriorityAndDate(Priority::All, QDate::currentDate());
+    select();
 }
 
 // Метод добавления напоминания в базу данных
@@ -33,9 +36,36 @@ void ReminderModel::addReminder(const QString &task,
     // Добавление напоминания через менеджер базы данных
     _manager->addReminder(
      { task, description, dateFromStr, time, static_cast<Priority>(priority), { tag, color } });
+    select();
 
     // Пересортировка модели по приоритету после добавления напоминания
-    sortByPriority(Qt::DescendingOrder);
+    //        sortByPriority(Qt::DescendingOrder);
+    //    applyFilters();
+}
+
+// Метод изменения напоминания в базе данных
+void ReminderModel::updateReminder(int id,
+                                   const QString &task,
+                                   const QString &description,
+                                   const QString &date,
+                                   const QTime &time,
+                                   const int &priority,
+                                   const QString &tag,
+                                   const QColor &color)
+{
+    // Преобразование строки с датой в QDate
+    QDate dateFromStr = QDate::fromString(date, "dd MMM yyyy");
+
+    // Добавление напоминания через менеджер базы данных
+    _manager->updateReminder(
+     id, { task, description, dateFromStr, time, static_cast<Priority>(priority), { tag, color } });
+    select();
+}
+
+void ReminderModel::setCompleted(int id, bool completed)
+{
+    _manager->setCompleted(id, completed);
+    select();
 }
 
 // Метод сортировки модели по приоритету
@@ -46,9 +76,6 @@ void ReminderModel::sortByPriority(Qt::SortOrder order)
 
     // Устанавливаем сортировку по этому столбцу и порядку
     setSort(priorityColumn, order);
-
-    // Выполняем запрос
-    select();
 }
 // Метод фильтрации модели по приоритету и дате
 void ReminderModel::filterByPriorityAndDate(Priority priority, const QDate &date)
@@ -63,7 +90,7 @@ void ReminderModel::filterByPriorityAndDate(Priority priority, const QDate &date
 
     // Добавление фильтра по дате, если она задана
     if (!date.isNull()) {
-        _currentFilters.append(QString("Date='%1'").arg(date.toString(Qt::ISODate)));
+        _currentFilters.append(QString("Date='%1'").arg(date.toString("dd MMM yyyy")));
     }
 
     // Применение фильтров
@@ -77,9 +104,6 @@ void ReminderModel::applyFilters()
 
     // Установка фильтра
     setFilter(filterString);
-
-    // Выполнение запроса
-    select();
 }
 // Метод преобразования приоритета в цвет
 QColor ReminderModel::mapPriorityToColor(const Priority priority) const
@@ -150,6 +174,8 @@ QVariant ReminderModel::data(const QModelIndex &index, int role) const
         return mapPriorityToColor(record.value("priority").value<Priority>());
     case Completed:
         return record.value("completed");
+    case Id:
+        return record.value("id");
     default:
         return QVariant();
     }
@@ -166,5 +192,6 @@ QHash<int, QByteArray> ReminderModel::roleNames() const
     roles[TagRole] = "tag_name";
     roles[TagColor] = "tag_color";
     roles[Completed] = "completed";
+    roles[Id] = "id";
     return roles;
 }

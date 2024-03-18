@@ -15,6 +15,7 @@ SilicaListView {
         radius: 20
         anchors.horizontalCenter: parent.horizontalCenter
         color: model.priority
+        property int id: model.id
 
         ColumnLayout {
             Label {
@@ -62,6 +63,19 @@ SilicaListView {
                 id: next
                 anchors.top: parent.top
                 icon.source: "image://theme/icon-cover-next"
+                onClicked: {
+                    pageStack.push(Qt.resolvedUrl("EditTask.qml"), {
+                                       "task": model.task,
+                                       "date": model.date,
+                                       "priority": model.priority,
+                                       "time": model.time,
+                                       "description": model.description,
+                                       "tag_name": model.tag_name,
+                                       "tag_color": model.tag_color,
+                                       "completed": model.completed,
+                                       "id": model.id
+                                   })
+                }
             }
 
             Label {
@@ -70,15 +84,22 @@ SilicaListView {
                 anchors.horizontalCenter: parent.horizontalCenter
             }
         }
-        IconButton {
+        Rectangle {
+            radius: 20
+            height: 100
+            width: 100
             id: check
             anchors {
                 verticalCenter: parent.verticalCenter
                 right: parent.right
             }
-            icon.source: "image://theme/icon-l-check"
-            onClicked: {
-                model.completed = !model.completed
+            color: model.completed ? "green" : "transparent"
+            IconButton {
+                icon.source: "image://theme/icon-l-check"
+                highlighted: model.completed
+                onClicked: {
+                    ReminderModel.setCompleted(model.id, !model.completed)
+                }
             }
         }
     }

@@ -21,6 +21,8 @@ namespace DailyPlanner {
         const QSqlDatabase &database() const;
 
         bool clearRemindersTable();
+        bool updateReminder(int id, const Reminder &reminder);
+        bool setCompleted(int id, bool completed);
     private:
         QSqlDatabase _database;
     };

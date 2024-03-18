@@ -46,6 +46,7 @@ Page {
                         text: "All"
                     }
                 }
+                //                currentIndex: 5
             }
             Button {
                 id: button

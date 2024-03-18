@@ -58,6 +58,7 @@ HEADERS += \
 
 DISTFILES += \
     qml/pages/AddTask.qml \
+    qml/pages/EditTask.qml \
     qml/pages/PlannerView.qml \
     rpm/ru.auroraos.dailyplanner.spec \
     AUTHORS.md \

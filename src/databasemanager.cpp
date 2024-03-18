@@ -18,7 +18,7 @@ bool DatabaseManager::openDatabase()
         qWarning() << "Error: Unable to open database" << _database.lastError().text();
         return false;
     }
-    qWarning()<<_database.databaseName();
+    qWarning() << _database.databaseName();
     createTable();
 
     return true;
@@ -40,7 +40,8 @@ bool DatabaseManager::createTable()
                     "time TIME, "
                     "priority INTEGER, "
                     "tag_name TEXT, "
-                    "tag_color TEXT)")) {
+                    "tag_color TEXT, "
+                    "completed INTEGER)")) {
         qWarning() << "Error: Unable to create table" << query.lastError().text();
         return false;
     }
@@ -51,7 +52,8 @@ bool DatabaseManager::createTable()
 bool DatabaseManager::addReminder(const Reminder &reminder)
 {
     QSqlQuery query;
-    query.prepare("INSERT INTO reminders (taskname, description, date, time, priority, tag_name, tag_color) VALUES (?, ?, ?, ?, ?, ?, ?)");
+    query.prepare("INSERT INTO reminders (taskname, description, date, time, priority, tag_name, "
+                  "tag_color, completed) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
     query.addBindValue(reminder.taskname);
     query.addBindValue(reminder.description);
     query.addBindValue(reminder.date);
@@ -59,9 +61,45 @@ bool DatabaseManager::addReminder(const Reminder &reminder)
     query.addBindValue(static_cast<int>(reminder.priority));
     query.addBindValue(reminder.tag.name);
     query.addBindValue(reminder.tag.color.name());
+    query.addBindValue(0);
 
     if (!query.exec()) {
         qWarning() << "Error: Unable to add reminder" << query.lastError().text();
+        return false;
+    }
+
+    return true;
+}
+bool DatabaseManager::setCompleted(int id, bool completed)
+{
+    QSqlQuery query;
+    query.prepare("UPDATE reminders SET completed = ? WHERE id = ?");
+    query.addBindValue(completed);
+    query.addBindValue(id);
+    if (!query.exec()) {
+        qWarning() << "Error: Unable to set complete reminder" << query.lastError().text();
+        return false;
+    }
+
+    return true;
+}
+
+bool DatabaseManager::updateReminder(int id, const Reminder &reminder)
+{
+    QSqlQuery query;
+    query.prepare("UPDATE reminders SET taskname = ?, description = ?, date = ?, time = ?, "
+                  "priority = ?, tag_name = ?, tag_color = ? WHERE id = ?");
+    query.addBindValue(reminder.taskname);
+    query.addBindValue(reminder.description);
+    query.addBindValue(reminder.date);
+    query.addBindValue(reminder.time);
+    query.addBindValue(static_cast<int>(reminder.priority));
+    query.addBindValue(reminder.tag.name);
+    query.addBindValue(reminder.tag.color.name());
+    query.addBindValue(id);
+
+    if (!query.exec()) {
+        qWarning() << "Error: Unable to update reminder" << query.lastError().text();
         return false;
     }
 
@@ -72,11 +110,11 @@ bool DatabaseManager::clearRemindersTable()
 {
     QSqlQuery query;
 
-    if (query.exec("DELETE FROM reminders")) {
-        qDebug() << "Successfully cleared the reminders table.";
+    if (query.exec("DROP TABLE IF EXISTS reminders")) {
+        qDebug() << "Successfully dropped the reminders table.";
         return true;
     } else {
-        qWarning() << "Error clearing the reminders table:" << query.lastError().text();
+        qWarning() << "Error dropping the reminders table:" << query.lastError().text();
         return false;
     }
 }
@@ -108,4 +146,3 @@ const QSqlDatabase &DatabaseManager::database() const
 {
     return _database;
 }
-
