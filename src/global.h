@@ -11,7 +11,8 @@ enum Priority
     Low,
     Medium,
     High,
-    Highest
+    Highest,
+    All
 };
 Q_DECLARE_METATYPE(Priority)
 struct Tag

@@ -13,37 +13,67 @@ Page {
             title: qsTr("Daily Planner")
             extraContent.children: [
                 IconButton {
-                    objectName: "aboutButton"
-                    icon.source: "image://theme/icon-m-about"
-                    anchors.verticalCenter: parent.verticalCenter
-                    onClicked: pageStack.push(Qt.resolvedUrl("AboutPage.qml"))
-                },
-                IconButton {
                     objectName: "add"
                     icon.source: "image://theme/icon-cover-new"
-                    anchors.horizontalCenter: parent.horizontalCenter
                     anchors.verticalCenter: parent.verticalCenter
                     onClicked: pageStack.push(Qt.resolvedUrl("AddTask.qml"))
                 }
             ]
         }
-        Button {
-            id: button
-            text: Qt.formatDate(new Date, "dd MMM yyyy")
-            Layout.alignment: Qt.AlignHCenter
-
-            onClicked: {
-                var dialog = pageStack.push(pickerComponent, {
-                                                "date": new Date(button.text)
-                                            })
-                dialog.accepted.connect(function () {
-                    button.text = dialog.dateText
-                })
+        RowLayout {
+            ComboBox {
+                Layout.alignment: Qt.AlignLeft
+                width: 400
+                label: "Priority"
+                id: sortByPriorityCombo
+                menu: ContextMenu {
+                    MenuItem {
+                        text: "Lowest"
+                    }
+                    MenuItem {
+                        text: "Low"
+                    }
+                    MenuItem {
+                        text: "Medium"
+                    }
+                    MenuItem {
+                        text: "High"
+                    }
+                    MenuItem {
+                        text: "Highest"
+                    }
+                    MenuItem {
+                        text: "All"
+                    }
+                }
             }
+            Button {
+                id: button
+                Layout.alignment: Qt.AlignRight
+                width: 200
+                text: Qt.formatDate(new Date, "dd MMM yyyy")
+                onClicked: {
+                    var dialog = pageStack.push(pickerComponent, {
+                                                    "date": new Date(button.text)
+                                                })
+                    dialog.accepted.connect(function () {
+                        button.text = dialog.dateText
+                    })
+                }
 
-            Component {
-                id: pickerComponent
-                DatePickerDialog {}
+                Component {
+                    id: pickerComponent
+                    DatePickerDialog {}
+                }
+            }
+        }
+        Button {
+            text: "Apply Filter"
+            Layout.alignment: Qt.AlignHCenter
+            onClicked: {
+                ReminderModel.filterByPriorityAndDate(
+                            sortByPriorityCombo.currentIndex,
+                            new Date(button.text))
             }
         }
 

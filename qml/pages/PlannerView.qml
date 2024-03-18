@@ -49,5 +49,37 @@ SilicaListView {
                 }
             }
         }
+        Rectangle {
+            height: 100
+            width: 100
+            color: "transparent"
+            anchors {
+                verticalCenter: parent.verticalCenter
+                right: check.left
+            }
+            IconButton {
+                height: 60
+                id: next
+                anchors.top: parent.top
+                icon.source: "image://theme/icon-cover-next"
+            }
+
+            Label {
+                text: "edit"
+                anchors.top: next.bottom
+                anchors.horizontalCenter: parent.horizontalCenter
+            }
+        }
+        IconButton {
+            id: check
+            anchors {
+                verticalCenter: parent.verticalCenter
+                right: parent.right
+            }
+            icon.source: "image://theme/icon-l-check"
+            onClicked: {
+                model.completed = !model.completed
+            }
+        }
     }
 }

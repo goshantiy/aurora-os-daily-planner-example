@@ -21,7 +21,8 @@ namespace DailyPlanner {
             DescriptionRole,
             PriorityRole,
             TagRole,
-            TagColor
+            TagColor,
+            Completed
         };
 
     public:
@@ -36,14 +37,17 @@ namespace DailyPlanner {
                          const int &priority = 0,
                          const QString &tag = {},
                          const QColor &color = "gray");
-        //        int rowCount(const QModelIndex &parent = QModelIndex()) const override;
         QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
         QHash<int, QByteArray> roleNames() const override;
-        void sortByDate(const QString &dateStr);
-        void filterByPriority(Priority priority);
         void sortByPriority(Qt::SortOrder order);
+        void sortByField(Qt::SortOrder order, int field);
+        void filterByField(const QString &field, const QVariant &value);
+
+        Q_INVOKABLE void filterByPriorityAndDate(Priority priority, const QDate &date);
+        void applyFilters();
 
     private:
+        QStringList _currentFilters;
         DatabaseManager *_manager { nullptr };
         QColor mapPriorityToColor(Priority priority) const;
     };

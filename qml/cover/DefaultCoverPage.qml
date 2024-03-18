@@ -46,7 +46,6 @@ CoverBackground {
         objectName: "placeholder"
         text: qsTr("Daily Planner")
         icon {
-            //            source: Qt.resolvedUrl("../icons/dailyplanner.svg")
             sourceSize {
                 width: icon.width
                 height: icon.height

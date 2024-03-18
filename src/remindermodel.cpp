@@ -1,58 +1,87 @@
 #include "remindermodel.h"
 #include <QSqlQuery>
 #include <QDebug>
-/// TO DO
-/// QML INTEGRATION
-/// APPLICATION FOR USING THIS COMPONENTS
-/// TAGS
 
 using namespace DailyPlanner;
 
+// Конструктор класса ReminderModel
 ReminderModel::ReminderModel(DatabaseManager *manager, const QSqlDatabase &db, QObject *parent) :
     QSqlTableModel(parent, db), _manager(manager)
 {
+    // Установка таблицы для модели
     setTable("reminders");
+
+    // Сортировка по приоритету в порядке убывания при создании модели
     sortByPriority(Qt::DescendingOrder);
+
+    // Фильтрация по приоритету All и текущей дате при создании модели
+    filterByPriorityAndDate(Priority::All, QDate::currentDate());
 }
 
+// Метод добавления напоминания в базу данных
 void ReminderModel::addReminder(const QString &task,
                                 const QString &description,
                                 const QString &date,
                                 const QTime &time,
                                 const int &priority,
                                 const QString &tag,
-                                const QColor& color)
+                                const QColor &color)
 {
+    // Преобразование строки с датой в QDate
     QDate dateFromStr = QDate::fromString(date, "dd MMM yyyy");
+
+    // Добавление напоминания через менеджер базы данных
     _manager->addReminder(
      { task, description, dateFromStr, time, static_cast<Priority>(priority), { tag, color } });
+
+    // Пересортировка модели по приоритету после добавления напоминания
     sortByPriority(Qt::DescendingOrder);
 }
 
-void ReminderModel::sortByDate(const QString &dateStr)
-{
-    setFilter(QString("Date='%1'").arg(dateStr));
-    select();
-}
-
+// Метод сортировки модели по приоритету
 void ReminderModel::sortByPriority(Qt::SortOrder order)
 {
-    QSqlQuery query;
-    if (order == Qt::AscendingOrder)
-        query.prepare("SELECT * FROM reminders ORDER BY priority ASC");
-    else
-        query.prepare("SELECT * FROM reminders ORDER BY priority DESC");
-    if (query.exec()) {
-        setQuery(query);
-        return;
-    }
-}
+    // Получаем индекс столбца "priority"
+    int priorityColumn = record().indexOf("priority");
 
-void ReminderModel::filterByPriority(Priority priority)
-{
-    setFilter(QString("Priority='%1'").arg(QString::number(priority)));
+    // Устанавливаем сортировку по этому столбцу и порядку
+    setSort(priorityColumn, order);
+
+    // Выполняем запрос
     select();
 }
+// Метод фильтрации модели по приоритету и дате
+void ReminderModel::filterByPriorityAndDate(Priority priority, const QDate &date)
+{
+    // Очистка текущих фильтров
+    _currentFilters.clear();
+
+    // Добавление фильтра по приоритету, если он задан
+    if (priority != All) {
+        _currentFilters.append(QString("Priority='%1'").arg(QString::number(priority)));
+    }
+
+    // Добавление фильтра по дате, если она задана
+    if (!date.isNull()) {
+        _currentFilters.append(QString("Date='%1'").arg(date.toString(Qt::ISODate)));
+    }
+
+    // Применение фильтров
+    applyFilters();
+}
+// Метод применения текущих фильтров к модели
+void ReminderModel::applyFilters()
+{
+    // Соединяем все фильтры в одну строку
+    QString filterString = _currentFilters.join(" AND ");
+
+    // Установка фильтра
+    setFilter(filterString);
+
+    // Выполнение запроса
+    select();
+}
+// Метод преобразования приоритета в цвет
 QColor ReminderModel::mapPriorityToColor(const Priority priority) const
 {
     switch (priority) {
@@ -71,6 +100,32 @@ QColor ReminderModel::mapPriorityToColor(const Priority priority) const
     }
 }
 
+// Метод сортировки модели по указанному полю и порядку
+void ReminderModel::sortByField(Qt::SortOrder order, int field)
+{
+    // Установка сортировки по заданному полю и порядку
+    setSort(field, order);
+
+    // Отладочное сообщение с текущим запросом сортировки
+    qDebug() << selectStatement();
+
+    // Выполнение запроса
+    select();
+}
+
+// Метод фильтрации модели по указанному полю и значению
+void ReminderModel::filterByField(const QString &field, const QVariant &value)
+{
+    // Установка фильтрации по заданному полю и значению
+    setFilter(QString("%1='%2'").arg(field, value.toString()));
+
+    // Отладочное сообщение с текущим запросом фильтрации
+    qDebug() << selectStatement();
+
+    // Выполнение запроса
+    select();
+}
+// Переопределение метода получения данных из модели для обработки пользовательских ролей
 QVariant ReminderModel::data(const QModelIndex &index, int role) const
 {
     if (role < Qt::UserRole)
@@ -93,6 +148,8 @@ QVariant ReminderModel::data(const QModelIndex &index, int role) const
         return record.value("tag_color");
     case PriorityRole:
         return mapPriorityToColor(record.value("priority").value<Priority>());
+    case Completed:
+        return record.value("completed");
     default:
         return QVariant();
     }
@@ -108,5 +165,6 @@ QHash<int, QByteArray> ReminderModel::roleNames() const
     roles[DescriptionRole] = "description";
     roles[TagRole] = "tag_name";
     roles[TagColor] = "tag_color";
+    roles[Completed] = "completed";
     return roles;
 }
