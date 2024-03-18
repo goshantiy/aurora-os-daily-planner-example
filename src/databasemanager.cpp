@@ -6,29 +6,38 @@
 #include <QtSql/QSqlError>
 
 using namespace DailyPlanner;
+
+// Конструктор
 DatabaseManager::DatabaseManager(QObject *parent) : QObject(parent)
 {}
 
+// Метод для открытия базы данных
 bool DatabaseManager::openDatabase()
 {
+    // Установка типа базы данных и пути к базе данных
     _database = QSqlDatabase::addDatabase("QSQLITE");
     _database.setDatabaseName("plannerDB.db");
 
+    // Проверка на успешное открытие базы данных
     if (!_database.open()) {
         qWarning() << "Error: Unable to open database" << _database.lastError().text();
         return false;
     }
     qWarning() << _database.databaseName();
+
+    // Создание таблицы, если она не существует
     createTable();
 
     return true;
 }
 
+// Метод для закрытия базы данных
 void DatabaseManager::closeDatabase()
 {
     _database.close();
 }
 
+// Метод для создания таблицы reminders
 bool DatabaseManager::createTable()
 {
     QSqlQuery query;
@@ -49,6 +58,7 @@ bool DatabaseManager::createTable()
     return true;
 }
 
+// Метод для добавления напоминания в базу данных
 bool DatabaseManager::addReminder(const Reminder &reminder)
 {
     QSqlQuery query;
@@ -61,7 +71,7 @@ bool DatabaseManager::addReminder(const Reminder &reminder)
     query.addBindValue(static_cast<int>(reminder.priority));
     query.addBindValue(reminder.tag.name);
     query.addBindValue(reminder.tag.color.name());
-    query.addBindValue(0);
+    query.addBindValue(0); // Изначально напоминание не завершено
 
     if (!query.exec()) {
         qWarning() << "Error: Unable to add reminder" << query.lastError().text();
@@ -70,11 +80,13 @@ bool DatabaseManager::addReminder(const Reminder &reminder)
 
     return true;
 }
+
+// Метод для установки статуса завершенности напоминания по его идентификатору
 bool DatabaseManager::setCompleted(int id, bool completed)
 {
     QSqlQuery query;
     query.prepare("UPDATE reminders SET completed = ? WHERE id = ?");
-    query.addBindValue(completed);
+    query.addBindValue(completed ? 1 : 0);
     query.addBindValue(id);
     if (!query.exec()) {
         qWarning() << "Error: Unable to set complete reminder" << query.lastError().text();
@@ -83,7 +95,7 @@ bool DatabaseManager::setCompleted(int id, bool completed)
 
     return true;
 }
-
+// Метод для обновления информации о напоминании по его идентификатору
 bool DatabaseManager::updateReminder(int id, const Reminder &reminder)
 {
     QSqlQuery query;
@@ -105,7 +117,7 @@ bool DatabaseManager::updateReminder(int id, const Reminder &reminder)
 
     return true;
 }
-
+// Метод для очистки таблицы reminders
 bool DatabaseManager::clearRemindersTable()
 {
     QSqlQuery query;
@@ -118,7 +130,7 @@ bool DatabaseManager::clearRemindersTable()
         return false;
     }
 }
-
+// Метод для получения всех напоминаний из таблицы reminders
 QList<QVariantMap> DatabaseManager::getAllReminders()
 {
     QList<QVariantMap> reminders;
@@ -141,7 +153,7 @@ QList<QVariantMap> DatabaseManager::getAllReminders()
 
     return reminders;
 }
-
+// Метод для получения объекта базы данных
 const QSqlDatabase &DatabaseManager::database() const
 {
     return _database;
