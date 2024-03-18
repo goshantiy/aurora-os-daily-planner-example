@@ -59,6 +59,9 @@ Page {
                                                 })
                     dialog.accepted.connect(function () {
                         button.text = dialog.dateText
+                        ReminderModel.filterByPriorityAndDate(
+                                    sortByPriorityCombo.currentIndex,
+                                    new Date(button.text))
                     })
                 }
 

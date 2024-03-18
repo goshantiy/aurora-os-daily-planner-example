@@ -36,10 +36,8 @@ void ReminderModel::addReminder(const QString &task,
     // Добавление напоминания через менеджер базы данных
     _manager->addReminder(
      { task, description, dateFromStr, time, static_cast<Priority>(priority), { tag, color } });
-    select();
-
-    // Пересортировка модели по приоритету после добавления напоминания
-    //        sortByPriority(Qt::DescendingOrder);
+    //     Пересортировка модели по приоритету после добавления напоминания
+    sortByPriority(Qt::DescendingOrder);
     //    applyFilters();
 }
 
@@ -85,12 +83,12 @@ void ReminderModel::filterByPriorityAndDate(Priority priority, const QDate &date
 
     // Добавление фильтра по приоритету, если он задан
     if (priority != All) {
-        _currentFilters.append(QString("Priority='%1'").arg(QString::number(priority)));
+        _currentFilters.append(QString("priority='%1'").arg(QString::number(priority)));
     }
 
     // Добавление фильтра по дате, если она задана
     if (!date.isNull()) {
-        _currentFilters.append(QString("Date='%1'").arg(date.toString("dd MMM yyyy")));
+        _currentFilters.append(QString("date='%1'").arg(date.toString(Qt::ISODate)));
     }
 
     // Применение фильтров
@@ -104,6 +102,7 @@ void ReminderModel::applyFilters()
 
     // Установка фильтра
     setFilter(filterString);
+    select();
 }
 // Метод преобразования приоритета в цвет
 QColor ReminderModel::mapPriorityToColor(const Priority priority) const

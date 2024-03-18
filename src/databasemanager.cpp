@@ -66,7 +66,7 @@ bool DatabaseManager::addReminder(const Reminder &reminder)
                   "tag_color, completed) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
     query.addBindValue(reminder.taskname);
     query.addBindValue(reminder.description);
-    query.addBindValue(reminder.date);
+    query.addBindValue(reminder.date.toString(Qt::ISODate));
     query.addBindValue(reminder.time);
     query.addBindValue(static_cast<int>(reminder.priority));
     query.addBindValue(reminder.tag.name);
@@ -103,7 +103,7 @@ bool DatabaseManager::updateReminder(int id, const Reminder &reminder)
                   "priority = ?, tag_name = ?, tag_color = ? WHERE id = ?");
     query.addBindValue(reminder.taskname);
     query.addBindValue(reminder.description);
-    query.addBindValue(reminder.date);
+    query.addBindValue(reminder.date.toString(Qt::ISODate));
     query.addBindValue(reminder.time);
     query.addBindValue(static_cast<int>(reminder.priority));
     query.addBindValue(reminder.tag.name);
