@@ -37,7 +37,7 @@
 
 TARGET = ru.auroraos.dailyplanner
 
-QT += sql
+QT += sql dbus
 
 CONFIG += \
     auroraapp
@@ -45,12 +45,14 @@ CONFIG += \
 PKGCONFIG += \
 
 SOURCES += \
+    src/applicationservice.cpp \
     src/dailyplannerapp.cpp \
     src/databasemanager.cpp \
     src/main.cpp \
     src/remindermodel.cpp
 
 HEADERS += \
+    src/applicationservice.h \
     src/dailyplannerapp.h \
     src/databasemanager.h \
     src/global.h \
@@ -79,4 +81,10 @@ CONFIG += auroraapp_i18n
 TRANSLATIONS += \
     translations/ru.auroraos.dailyplanner.ts \
     translations/ru.auroraos.dailyplanner-ru.ts \
+
+DEFINES += \
+    DBUS_SERVICE=\\\"ru.auroraos.dailyplanner\\\" \
+    DBUS_PATH=\\\"/ru/auroraos/dailyplanner\\\" \
+    DBUS_INTERFACE=\\\"ru.auroraos.dailyplanner\\\" \
+    APP_ID_FILE_PATH=\\\"$${APP_ID_PATH}/$${APP_ID_FILE}\\\" \
 
