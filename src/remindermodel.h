@@ -58,6 +58,8 @@ namespace DailyPlanner {
                                         const QColor &color);
         Q_INVOKABLE void setCompleted(int id, bool completed);
 
+        Q_INVOKABLE void filterByTag(const QString& tagName);
+
     private:
         void applyFilters();
         QStringList _currentFilters;

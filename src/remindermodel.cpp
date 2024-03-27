@@ -52,7 +52,7 @@ void ReminderModel::updateReminder(int id,
                                    const QColor &color)
 {
     // Преобразование строки с датой в QDate
-    QDate dateFromStr = QDate::fromString(date, "dd MMM yyyy");
+    QDate dateFromStr = QDate::fromString(date, Qt::ISODate);
 
     // Добавление напоминания через менеджер базы данных
     _manager->updateReminder(
@@ -64,6 +64,13 @@ void ReminderModel::setCompleted(int id, bool completed)
 {
     _manager->setCompleted(id, completed);
     select();
+}
+
+void ReminderModel::filterByTag(const QString &tagName)
+{
+    _currentFilters.clear();
+    _currentFilters.append(QString("tag_name='%1'").arg(tagName));
+    applyFilters();
 }
 
 // Метод сортировки модели по приоритету
@@ -97,8 +104,11 @@ void ReminderModel::filterByPriorityAndDate(Priority priority, const QDate &date
 // Метод применения текущих фильтров к модели
 void ReminderModel::applyFilters()
 {
+    QString filterString;
     // Соединяем все фильтры в одну строку
-    QString filterString = _currentFilters.join(" AND ");
+    if (_currentFilters.count() > 1)
+        filterString = _currentFilters.join(" AND ");
+    else filterString = _currentFilters.first();
 
     // Установка фильтра
     setFilter(filterString);
