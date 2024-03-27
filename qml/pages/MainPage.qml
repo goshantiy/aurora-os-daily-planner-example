@@ -26,6 +26,7 @@ Page {
                 width: 400
                 label: "Priority"
                 id: sortByPriorityCombo
+                currentIndex: 5 // Устанавливаем "All" как значение по умолчанию
                 menu: ContextMenu {
                     MenuItem {
                         text: "Lowest"
@@ -46,7 +47,6 @@ Page {
                         text: "All"
                     }
                 }
-                //                currentIndex: 5
             }
             Button {
                 id: button

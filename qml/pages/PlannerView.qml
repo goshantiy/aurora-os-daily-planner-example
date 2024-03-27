@@ -17,6 +17,23 @@ SilicaListView {
         color: model.priority
         property int id: model.id
 
+        MouseArea {
+            anchors.fill: parent
+            onClicked: {
+                pageStack.push(Qt.resolvedUrl("TaskDescription.qml"), {
+                                   "task": model.task,
+                                   "date": model.date,
+                                   "priority": model.priority,
+                                   "time": model.time,
+                                   "description": model.description,
+                                   "tag_name": model.tag_name,
+                                   "tag_color": model.tag_color,
+                                   "completed": model.completed,
+                                   "id": model.id
+                               })
+            }
+        }
+
         ColumnLayout {
             Label {
                 topPadding: 10
@@ -40,9 +57,15 @@ SilicaListView {
                     Layout.preferredHeight: 25
                     color: model.tag_color
                     radius: 3
+                    MouseArea {
+                        anchors.fill: parent
+                        onClicked: {
+                            ReminderModel.filterByTag(model.tag_name)
+                        }
+                    }
                 }
                 Label {
-                    text: model.description
+                    text: model.tag_name
                     color: "white"
                     font.pixelSize: Theme.fontSizeSmall
                     font.family: Theme.fontFamily
@@ -69,7 +92,7 @@ SilicaListView {
                                        "date": model.date,
                                        "priority": model.priority,
                                        "time": model.time,
-                                       "description": model.description,
+                                       "descriptionTask": model.description,
                                        "tag_name": model.tag_name,
                                        "tag_color": model.tag_color,
                                        "completed": model.completed,

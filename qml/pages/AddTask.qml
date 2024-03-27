@@ -12,9 +12,10 @@ Page {
             Layout.alignment: Qt.AlignTop
             Layout.fillWidth: true
             objectName: "pageHeader"
+            title: "Add task"
             extraContent.children: [
                 Button {
-                    anchors.right: parent.right
+                    anchors.left: parent.left
                     anchors.verticalCenter: parent.verticalCenter
                     text: "Add task"
                     onClicked: {

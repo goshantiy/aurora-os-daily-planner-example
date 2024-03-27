@@ -60,6 +60,7 @@ DISTFILES += \
     qml/pages/AddTask.qml \
     qml/pages/EditTask.qml \
     qml/pages/PlannerView.qml \
+    qml/pages/TaskDescription.qml \
     rpm/ru.auroraos.dailyplanner.spec \
     AUTHORS.md \
     CODE_OF_CONDUCT.md \

@@ -8,7 +8,7 @@ Page {
     property string date
     property color priority
     property string time
-    property string description
+    property string descriptionTask
     property string tag_name
     property string tag_color
     property string completed
@@ -20,9 +20,10 @@ Page {
             Layout.alignment: Qt.AlignTop
             Layout.fillWidth: true
             objectName: "pageHeader"
+            title: "Task edit"
             extraContent.children: [
                 Button {
-                    anchors.right: parent.right
+                    anchors.left: parent.left
                     anchors.verticalCenter: parent.verticalCenter
                     text: "Edit task"
                     onClicked: {
@@ -62,13 +63,13 @@ Page {
             TextField {
                 anchors.fill: parent
                 id: taskDescription
-                property string placeholderText: description
+                property string placeholderText: descriptionTask
                 Text {
                     text: taskDescription.placeholderText
                     color: "#aaa"
                     visible: !taskDescription.text
                 }
-                text: description
+                text: descriptionTask
             }
         }
         RowLayout {
@@ -140,7 +141,8 @@ Page {
                 onClicked: {
                     var dialog = pageStack.push(timepickerComponent)
                     dialog.accepted.connect(function () {
-                        buttontime.text = dialog.timeText
+                        buttontime.text = Qt.formatDate(
+                                    new Date(dialog.timeText), "dd MMM yyyy")
                     })
                 }
 
