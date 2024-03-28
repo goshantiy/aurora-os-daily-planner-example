@@ -141,8 +141,7 @@ Page {
                 onClicked: {
                     var dialog = pageStack.push(timepickerComponent)
                     dialog.accepted.connect(function () {
-                        buttontime.text = Qt.formatDate(
-                                    new Date(dialog.timeText), "dd MMM yyyy")
+                        buttontime.text = dialog.timeText
                     })
                 }
 

@@ -46,5 +46,10 @@
         <source>Daily Planner</source>
         <translation type="unfinished">Daily Planner</translation>
     </message>
+    <message>
+        <location filename="../qml/pages/MainPage.qml" line="27"/>
+        <source>Enter task name to filter</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 </TS>

@@ -73,6 +73,38 @@ void ReminderModel::filterByTag(const QString &tagName)
     applyFilters();
 }
 
+void ReminderModel::filterByCriteria(Priority priority, const QDate &date, const QString &search)
+{
+    // Очистка текущих фильтров
+    _currentFilters.clear();
+
+    // Добавление фильтра по приоритету, если он задан
+    if (priority != All) {
+        _currentFilters.append(QString("priority='%1'").arg(QString::number(priority)));
+    }
+
+    // Добавление фильтра по дате, если она задана
+    if (!date.isNull()) {
+        _currentFilters.append(QString("date='%1'").arg(date.toString(Qt::ISODate)));
+    }
+
+    if (!search.isEmpty()) {
+        _currentFilters.append(
+         QString("taskname LIKE '%%1%' OR description LIKE '%%1%'").arg(search));
+    }
+
+    // Применение фильтров
+    applyFilters();
+}
+
+void ReminderModel::search(const QString &name)
+{
+    // Устанавливаем фильтр для модели
+    QString filter = QString("taskname LIKE '%%1%' OR description LIKE '%%1%'").arg(name);
+    setFilter(filter);
+    select();
+}
+
 // Метод сортировки модели по приоритету
 void ReminderModel::sortByPriority(Qt::SortOrder order)
 {
@@ -108,7 +140,8 @@ void ReminderModel::applyFilters()
     // Соединяем все фильтры в одну строку
     if (_currentFilters.count() > 1)
         filterString = _currentFilters.join(" AND ");
-    else filterString = _currentFilters.first();
+    else
+        filterString = _currentFilters.first();
 
     // Установка фильтра
     setFilter(filterString);

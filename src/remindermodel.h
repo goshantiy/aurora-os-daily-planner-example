@@ -60,6 +60,9 @@ namespace DailyPlanner {
 
         Q_INVOKABLE void filterByTag(const QString& tagName);
 
+        Q_INVOKABLE void search(const QString& name);
+
+        Q_INVOKABLE void filterByCriteria(Priority priority, const QDate &date, const QString &search);
     private:
         void applyFilters();
         QStringList _currentFilters;

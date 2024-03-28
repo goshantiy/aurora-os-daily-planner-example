@@ -21,6 +21,13 @@ Page {
             ]
         }
         RowLayout {
+            TextField {
+                id: taskNameField
+                Layout.fillWidth: true
+                placeholderText: qsTr("Enter task name to filter")
+            }
+        }
+        RowLayout {
             ComboBox {
                 Layout.alignment: Qt.AlignLeft
                 width: 400
@@ -75,9 +82,9 @@ Page {
             text: "Apply Filter"
             Layout.alignment: Qt.AlignHCenter
             onClicked: {
-                ReminderModel.filterByPriorityAndDate(
+                ReminderModel.filterByCriteria(
                             sortByPriorityCombo.currentIndex,
-                            new Date(button.text))
+                            new Date(button.text), taskNameField.text)
             }
         }
 
