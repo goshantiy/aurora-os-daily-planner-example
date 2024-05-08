@@ -12,7 +12,7 @@ namespace DailyPlanner {
     class ReminderModel : public QSqlTableModel
     {
         Q_OBJECT
-
+    public:
         enum ReminderRoles
         {
             TaskRole = Qt::UserRole + 1,
@@ -37,32 +37,17 @@ namespace DailyPlanner {
         void sortByField(Qt::SortOrder order, int field);
         void filterByField(const QString &field, const QVariant &value);
 
-        Q_INVOKABLE
-        void addReminder(const QString &taskname,
-                         const QString &description = {},
-                         const QString &date = QDate::currentDate().toString(),
-                         const QTime &time = QTime::currentTime(),
-                         const int &priority = 0,
-                         const QString &tag = {},
-                         const QColor &color = "gray");
+
 
         Q_INVOKABLE void filterByPriorityAndDate(Priority priority, const QDate &date);
 
-        Q_INVOKABLE void updateReminder(int id,
-                                        const QString &task,
-                                        const QString &description,
-                                        const QString &date,
-                                        const QTime &time,
-                                        const int &priority,
-                                        const QString &tag,
-                                        const QColor &color);
-        Q_INVOKABLE void setCompleted(int id, bool completed);
+        Q_INVOKABLE void filterByTag(const QString &tagName);
 
-        Q_INVOKABLE void filterByTag(const QString& tagName);
+        Q_INVOKABLE void search(const QString &name);
 
-        Q_INVOKABLE void search(const QString& name);
+        Q_INVOKABLE void
+        filterByCriteria(Priority priority, const QDate &date, const QString &search);
 
-        Q_INVOKABLE void filterByCriteria(Priority priority, const QDate &date, const QString &search);
     private:
         void applyFilters();
         QStringList _currentFilters;

@@ -10,9 +10,6 @@ ReminderModel::ReminderModel(DatabaseManager *manager, const QSqlDatabase &db, Q
 {
     // Установка таблицы для модели
     setTable("reminders");
-
-    qDebug() << _manager->getAllReminders();
-
     //     Сортировка по приоритету в порядке убывания при создании модели
     sortByPriority(Qt::DescendingOrder);
 
@@ -21,60 +18,17 @@ ReminderModel::ReminderModel(DatabaseManager *manager, const QSqlDatabase &db, Q
     select();
 }
 
-// Метод добавления напоминания в базу данных
-void ReminderModel::addReminder(const QString &task,
-                                const QString &description,
-                                const QString &date,
-                                const QTime &time,
-                                const int &priority,
-                                const QString &tag,
-                                const QColor &color)
-{
-    // Преобразование строки с датой в QDate
-    QDate dateFromStr = QDate::fromString(date, "dd MMM yyyy");
-
-    // Добавление напоминания через менеджер базы данных
-    _manager->addReminder(
-     { task, description, dateFromStr, time, static_cast<Priority>(priority), { tag, color } });
-    //     Пересортировка модели по приоритету после добавления напоминания
-    sortByPriority(Qt::DescendingOrder);
-    //    applyFilters();
-}
-
-// Метод изменения напоминания в базе данных
-void ReminderModel::updateReminder(int id,
-                                   const QString &task,
-                                   const QString &description,
-                                   const QString &date,
-                                   const QTime &time,
-                                   const int &priority,
-                                   const QString &tag,
-                                   const QColor &color)
-{
-    // Преобразование строки с датой в QDate
-    QDate dateFromStr = QDate::fromString(date, Qt::ISODate);
-
-    // Добавление напоминания через менеджер базы данных
-    _manager->updateReminder(
-     id, { task, description, dateFromStr, time, static_cast<Priority>(priority), { tag, color } });
-    select();
-}
-
-void ReminderModel::setCompleted(int id, bool completed)
-{
-    _manager->setCompleted(id, completed);
-    select();
-}
-
 void ReminderModel::filterByTag(const QString &tagName)
 {
     _currentFilters.clear();
     _currentFilters.append(QString("tag_name='%1'").arg(tagName));
+    //    _currentFilters.append(QString("ORDERED by priority, completed"));
     applyFilters();
 }
 
 void ReminderModel::filterByCriteria(Priority priority, const QDate &date, const QString &search)
 {
+    qDebug() << Q_FUNC_INFO;
     // Очистка текущих фильтров
     _currentFilters.clear();
 
@@ -92,6 +46,7 @@ void ReminderModel::filterByCriteria(Priority priority, const QDate &date, const
         _currentFilters.append(
          QString("taskname LIKE '%%1%' OR description LIKE '%%1%'").arg(search));
     }
+    //    _currentFilters.append(QString("ORDERED by priority, completed"));
 
     // Применение фильтров
     applyFilters();
@@ -99,8 +54,10 @@ void ReminderModel::filterByCriteria(Priority priority, const QDate &date, const
 
 void ReminderModel::search(const QString &name)
 {
+    qDebug() << Q_FUNC_INFO;
     // Устанавливаем фильтр для модели
-    QString filter = QString("taskname LIKE '%%1%' OR description LIKE '%%1%'").arg(name);
+    QString filter =
+     QString("taskname LIKE '%%1%' OR description LIKE '%%1%' OR tag LIKE '%%1%'").arg(name);
     setFilter(filter);
     select();
 }
@@ -108,15 +65,18 @@ void ReminderModel::search(const QString &name)
 // Метод сортировки модели по приоритету
 void ReminderModel::sortByPriority(Qt::SortOrder order)
 {
-    // Получаем индекс столбца "priority"
+    // Получаем индексы столбцов "priority" и "completed"
     int priorityColumn = record().indexOf("priority");
+    //       int completedColumn = record().indexOf("completed");
 
-    // Устанавливаем сортировку по этому столбцу и порядку
+    //       // Устанавливаем сортировку по этим двум столбцам и порядку
     setSort(priorityColumn, order);
+    //       setSort(completedColumn, order);
 }
 // Метод фильтрации модели по приоритету и дате
 void ReminderModel::filterByPriorityAndDate(Priority priority, const QDate &date)
 {
+    qDebug() << Q_FUNC_INFO;
     // Очистка текущих фильтров
     _currentFilters.clear();
 
@@ -129,6 +89,7 @@ void ReminderModel::filterByPriorityAndDate(Priority priority, const QDate &date
     if (!date.isNull()) {
         _currentFilters.append(QString("date='%1'").arg(date.toString(Qt::ISODate)));
     }
+    //    _currentFilters.append(QString("ORDERED by priority, completed"));
 
     // Применение фильтров
     applyFilters();
@@ -136,6 +97,7 @@ void ReminderModel::filterByPriorityAndDate(Priority priority, const QDate &date
 // Метод применения текущих фильтров к модели
 void ReminderModel::applyFilters()
 {
+    qDebug() << Q_FUNC_INFO;
     QString filterString;
     // Соединяем все фильтры в одну строку
     if (_currentFilters.count() > 1)
@@ -143,6 +105,7 @@ void ReminderModel::applyFilters()
     else
         filterString = _currentFilters.first();
 
+    qDebug() << filterString;
     // Установка фильтра
     setFilter(filterString);
     select();
@@ -152,36 +115,24 @@ QColor ReminderModel::mapPriorityToColor(const Priority priority) const
 {
     switch (priority) {
     case Lowest:
-        return QColor(0, 255, 0); // Green
+        return QColor(0, 230, 0, 128); // Green
     case Low:
-        return QColor(173, 216, 230); // Light Blue
+        return QColor(173, 216, 230, 128); // Light Blue
     case Medium:
-        return QColor(255, 255, 0); // Yellow
+        return QColor(230, 230, 0, 128); // Yellow
     case High:
-        return QColor(255, 165, 0); // Orange
+        return QColor(230, 165, 0, 128); // Orange
     case Highest:
-        return QColor(255, 0, 0); // Red
+        return QColor(230, 0, 0, 128); // Red
     default:
-        return QColor(255, 255, 255, 255); // Default to white
+        return QColor(255, 255, 255, 128); // Default to white
     }
-}
-
-// Метод сортировки модели по указанному полю и порядку
-void ReminderModel::sortByField(Qt::SortOrder order, int field)
-{
-    // Установка сортировки по заданному полю и порядку
-    setSort(field, order);
-
-    // Отладочное сообщение с текущим запросом сортировки
-    qDebug() << selectStatement();
-
-    // Выполнение запроса
-    select();
 }
 
 // Метод фильтрации модели по указанному полю и значению
 void ReminderModel::filterByField(const QString &field, const QVariant &value)
 {
+    qDebug() << Q_FUNC_INFO;
     // Установка фильтрации по заданному полю и значению
     setFilter(QString("%1='%2'").arg(field, value.toString()));
 

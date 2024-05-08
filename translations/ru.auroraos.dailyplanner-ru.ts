@@ -4,22 +4,22 @@
 <context>
     <name>AboutPage</name>
     <message>
-        <location filename="../qml/pages/AboutPage.qml" line="57"/>
-        <source>About Application</source>
-        <translation>О приложении</translation>
+        <location filename="../qml/pages/AboutPage.qml" line="58"/>
+        <source>О приложении</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/AboutPage.qml" line="67"/>
+        <location filename="../qml/pages/AboutPage.qml" line="72"/>
         <source>#descriptionText</source>
         <translation>&lt;p&gt;Short description of my Aurora OS Application&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../qml/pages/AboutPage.qml" line="72"/>
+        <location filename="../qml/pages/AboutPage.qml" line="77"/>
         <source>3-Clause BSD License</source>
         <translation>Лицензия 3-Clause BSD</translation>
     </message>
     <message>
-        <location filename="../qml/pages/AboutPage.qml" line="82"/>
+        <location filename="../qml/pages/AboutPage.qml" line="91"/>
         <source>#licenseText</source>
         <translation>&lt;p&gt;&lt;i&gt;Copyright (C) 2022 ru.auroraos&lt;/i&gt;&lt;/p&gt;
 &lt;p&gt;Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:&lt;/p&gt;
@@ -43,12 +43,17 @@
     <name>MainPage</name>
     <message>
         <location filename="../qml/pages/MainPage.qml" line="13"/>
-        <source>Daily Planner</source>
-        <translation type="unfinished">Ежедневник</translation>
+        <source>Ежедневник</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/MainPage.qml" line="27"/>
-        <source>Enter task name to filter</source>
+        <location filename="../qml/pages/MainPage.qml" line="24"/>
+        <source>Добавить</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/MainPage.qml" line="34"/>
+        <source>Введите фильтр</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

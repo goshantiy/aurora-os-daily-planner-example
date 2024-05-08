@@ -10,48 +10,64 @@ Page {
         PageHeader {
             Layout.alignment: Qt.AlignTop
             objectName: "pageHeader"
-            title: qsTr("Daily Planner")
+            title: qsTr("Ежедневник")
             extraContent.children: [
-                IconButton {
-                    objectName: "add"
-                    icon.source: "image://theme/icon-cover-new"
+                Button {
                     anchors.verticalCenter: parent.verticalCenter
-                    onClicked: pageStack.push(Qt.resolvedUrl("AddTask.qml"))
+                    width: 225
+                    height: 80
+                    onClicked: {
+                        pageStack.push(Qt.resolvedUrl("AddTask.qml"))
+                    }
+
+                    icon.source: "image://theme/icon-cover-new"
+                    text: qsTr("Добавить")
+                    Layout.alignment: Qt.AlignHCenter
                 }
             ]
         }
         RowLayout {
+            height: 100
             TextField {
                 id: taskNameField
                 Layout.fillWidth: true
-                placeholderText: qsTr("Enter task name to filter")
+                placeholderText: qsTr("Введите фильтр")
+            }
+            IconButton {
+                icon.source: "image://theme/icon-m-certificates"
+                Layout.alignment: Qt.AlignRight
+                onClicked: {
+                    AppManager.model.filterByCriteria(
+                                sortByPriorityCombo.currentIndex,
+                                new Date(button.text), taskNameField.text)
+                }
             }
         }
         RowLayout {
             ComboBox {
                 Layout.alignment: Qt.AlignLeft
                 width: 400
-                label: "Priority"
+                label: "Приоритет"
                 id: sortByPriorityCombo
                 currentIndex: 5 // Устанавливаем "All" как значение по умолчанию
                 menu: ContextMenu {
                     MenuItem {
-                        text: "Lowest"
+                        text: "Самый низкий"
                     }
                     MenuItem {
-                        text: "Low"
+                        text: "Низкий"
                     }
                     MenuItem {
-                        text: "Medium"
+                        text: "Средний"
                     }
                     MenuItem {
-                        text: "High"
+                        text: "Высокий"
                     }
                     MenuItem {
-                        text: "Highest"
+                        text: "Самый высокий"
                     }
                     MenuItem {
-                        text: "All"
+                        text: "Все"
                     }
                 }
             }
@@ -59,14 +75,14 @@ Page {
                 id: button
                 Layout.alignment: Qt.AlignRight
                 width: 200
-                text: Qt.formatDate(new Date, "dd MMM yyyy")
+                text: Qt.formatDate(new Date, "d MMM yyyy")
                 onClicked: {
                     var dialog = pageStack.push(pickerComponent, {
                                                     "date": new Date(button.text)
                                                 })
                     dialog.accepted.connect(function () {
                         button.text = dialog.dateText
-                        ReminderModel.filterByPriorityAndDate(
+                        AppManager.model.filterByPriorityAndDate(
                                     sortByPriorityCombo.currentIndex,
                                     new Date(button.text))
                     })
@@ -76,15 +92,6 @@ Page {
                     id: pickerComponent
                     DatePickerDialog {}
                 }
-            }
-        }
-        Button {
-            text: "Apply Filter"
-            Layout.alignment: Qt.AlignHCenter
-            onClicked: {
-                ReminderModel.filterByCriteria(
-                            sortByPriorityCombo.currentIndex,
-                            new Date(button.text), taskNameField.text)
             }
         }
 

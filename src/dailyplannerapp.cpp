@@ -5,17 +5,18 @@ DailyPlannerApp::DailyPlannerApp(QObject *parent) : QObject(parent)
 {
     _manager = new DatabaseManager(this);
     _manager->openDatabase();
+    _proxy = new PriorityCompletedSortProxyModel(this);
     _model = new ReminderModel(_manager, _manager->database(), this);
+//    _proxy->setSourceModel(_model);
+//    _proxy->setDynamicSortFilter(true);
+//    _proxy->setSortRole(
+//     ReminderModel::ReminderRoles::PriorityRole);
+//    _proxy->sort(0);
 }
 
-ReminderModel *DailyPlannerApp::model() const
+PriorityCompletedSortProxyModel *DailyPlannerApp::proxy() const
 {
-    return _model;
-}
-
-void DailyPlannerApp::setModel(ReminderModel *newModel)
-{
-    _model = newModel;
+    return _proxy;
 }
 
 DatabaseManager *DailyPlannerApp::manager() const
@@ -25,5 +26,29 @@ DatabaseManager *DailyPlannerApp::manager() const
 
 void DailyPlannerApp::setManager(DatabaseManager *newManager)
 {
+    if (_manager == newManager)
+        return;
     _manager = newManager;
+    emit managerChanged();
+}
+
+ReminderModel *DailyPlannerApp::model() const
+{
+    return _model;
+}
+
+void DailyPlannerApp::setModel(ReminderModel *newModel)
+{
+    if (_model == newModel)
+        return;
+    _model = newModel;
+    emit modelChanged();
+}
+
+void DailyPlannerApp::setProxy(PriorityCompletedSortProxyModel *newProxy)
+{
+    if (_proxy == newProxy)
+        return;
+    _proxy = newProxy;
+    emit proxyChanged();
 }

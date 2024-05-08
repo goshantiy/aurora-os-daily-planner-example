@@ -12,10 +12,9 @@ int main(int argc, char *argv[])
     QScopedPointer<QQuickView> view(Aurora::Application::createView());
     view->setSource(Aurora::Application::pathTo(QStringLiteral("qml/dailyplanner.qml")));
 
-    DailyPlanner::DailyPlannerApp dailyplanner;
+    const auto dailyplanner = new DailyPlanner::DailyPlannerApp;
 
-    view->rootContext()->setContextProperty("ReminderModel",
-                                            QVariant::fromValue(dailyplanner.model()));
+    view->rootContext()->setContextProperty("AppManager", QVariant::fromValue(dailyplanner));
     view->show();
 
     return application->exec();

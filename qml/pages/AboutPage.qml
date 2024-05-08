@@ -1,3 +1,5 @@
+
+
 /*******************************************************************************
 **
 ** Copyright (C) 2022 ru.auroraos
@@ -34,7 +36,6 @@
 ** EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 **
 *******************************************************************************/
-
 import QtQuick 2.0
 import Sailfish.Silica 1.0
 
@@ -54,12 +55,16 @@ Page {
 
             PageHeader {
                 objectName: "pageHeader"
-                title: qsTr("About Application")
+                title: qsTr("О приложении")
             }
 
             Label {
                 objectName: "descriptionText"
-                anchors { left: parent.left; right: parent.right; margins: Theme.horizontalPageMargin }
+                anchors {
+                    left: parent.left
+                    right: parent.right
+                    margins: Theme.horizontalPageMargin
+                }
                 color: palette.highlightColor
                 font.pixelSize: Theme.fontSizeSmall
                 textFormat: Text.RichText
@@ -74,7 +79,11 @@ Page {
 
             Label {
                 objectName: "licenseText"
-                anchors { left: parent.left; right: parent.right; margins: Theme.horizontalPageMargin }
+                anchors {
+                    left: parent.left
+                    right: parent.right
+                    margins: Theme.horizontalPageMargin
+                }
                 color: palette.highlightColor
                 font.pixelSize: Theme.fontSizeSmall
                 textFormat: Text.RichText

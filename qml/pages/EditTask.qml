@@ -20,18 +20,20 @@ Page {
             Layout.alignment: Qt.AlignTop
             Layout.fillWidth: true
             objectName: "pageHeader"
-            title: "Task edit"
+            title: "Редактирование"
             extraContent.children: [
                 Button {
                     anchors.left: parent.left
                     anchors.verticalCenter: parent.verticalCenter
-                    text: "Edit task"
+                    text: "Сохранить"
                     onClicked: {
-                        ReminderModel.updateReminder(
-                                    id, taskName.text, taskDescription.text,
-                                    buttondate.text, buttontime.text,
-                                    priorityCb.currentIndex, tag.text,
-                                    buttoncolor.backgroundColor)
+                        AppManager.updateReminder(id, taskName.text,
+                                                  taskDescription.text,
+                                                  buttondate.text,
+                                                  buttontime.text,
+                                                  priorityCb.currentIndex,
+                                                  tag.text,
+                                                  buttoncolor.backgroundColor)
                         pageStack.pop()
                     }
                 }
@@ -153,23 +155,23 @@ Page {
         }
         ComboBox {
             id: priorityCb
-            label: "Priority"
+            label: "Приоритет"
             Layout.alignment: Qt.AlignTop
             menu: ContextMenu {
                 MenuItem {
-                    text: "Lowest"
+                    text: "Самый низкий"
                 }
                 MenuItem {
-                    text: "Low"
+                    text: "Низкий"
                 }
                 MenuItem {
-                    text: "Medium"
+                    text: "Средний"
                 }
                 MenuItem {
-                    text: "High"
+                    text: "Высокий"
                 }
                 MenuItem {
-                    text: "Highest"
+                    text: "Самый высокий"
                 }
             }
             currentIndex: priority

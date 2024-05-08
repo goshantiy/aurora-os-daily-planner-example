@@ -19,13 +19,13 @@ Page {
         PageHeader {
             Layout.alignment: Qt.AlignTop
             Layout.fillWidth: true
-            title: "Task Details"
+            title: "Детали"
         }
 
         Label {
             Layout.alignment: Qt.AlignTop
             Layout.fillWidth: true
-            text: "Task: " + task
+            text: "Задача: " + task
             wrapMode: Text.Wrap
         }
         Rectangle {
@@ -36,7 +36,7 @@ Page {
         Label {
             Layout.alignment: Qt.AlignTop
             Layout.fillWidth: true
-            text: "Description: " + description
+            text: "Описание: " + description
             wrapMode: Text.Wrap
         }
         Rectangle {
@@ -58,7 +58,7 @@ Page {
         Label {
             Layout.alignment: Qt.AlignTop
             Layout.fillWidth: true
-            text: "Date: " + date
+            text: "Дата: " + date
         }
         Rectangle {
             height: 1
@@ -68,7 +68,7 @@ Page {
         Label {
             Layout.alignment: Qt.AlignTop
             Layout.fillWidth: true
-            text: "Time: " + time
+            text: "Время: " + time
         }
         Rectangle {
             height: 1
@@ -78,7 +78,7 @@ Page {
         Label {
             Layout.alignment: Qt.AlignTop
             Layout.fillWidth: true
-            text: completed ? "Completed: yes" : "Completed: no"
+            text: completed ? "Завершено: да" : "Завершено: нет"
         }
     }
 }

@@ -56,6 +56,7 @@ HEADERS += \
     src/dailyplannerapp.h \
     src/databasemanager.h \
     src/global.h \
+    src/prioritycompletedproxy.h \
     src/remindermodel.h
 
 DISTFILES += \

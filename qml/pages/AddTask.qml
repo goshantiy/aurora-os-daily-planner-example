@@ -12,20 +12,18 @@ Page {
             Layout.alignment: Qt.AlignTop
             Layout.fillWidth: true
             objectName: "pageHeader"
-            title: "Add task"
+            title: "Добавить"
             extraContent.children: [
                 Button {
                     anchors.left: parent.left
                     anchors.verticalCenter: parent.verticalCenter
-                    text: "Add task"
+                    text: "Добавить"
                     onClicked: {
-                        ReminderModel.addReminder(taskName.text,
-                                                  taskDescription.text,
-                                                  buttondate.text,
-                                                  buttontime.text,
-                                                  priorityCb.currentIndex,
-                                                  tag.text,
-                                                  buttoncolor.backgroundColor)
+                        AppManager.manager.addReminder(
+                                    taskName.text, taskDescription.text,
+                                    buttondate.text, buttontime.text,
+                                    priorityCb.currentIndex, tag.text,
+                                    buttoncolor.backgroundColor)
                         pageStack.pop()
                     }
                 }
@@ -40,7 +38,7 @@ Page {
             TextField {
                 anchors.fill: parent
                 id: taskName
-                property string placeholderText: "Task name"
+                property string placeholderText: "Имя"
                 Text {
                     text: taskName.placeholderText
                     color: "#aaa"
@@ -56,7 +54,7 @@ Page {
             TextField {
                 anchors.fill: parent
                 id: taskDescription
-                property string placeholderText: "Task description"
+                property string placeholderText: "Описание"
                 Text {
                     text: taskDescription.placeholderText
                     color: "#aaa"
@@ -73,7 +71,7 @@ Page {
                 TextField {
                     anchors.fill: parent
                     id: tag
-                    property string placeholderText: "Tag"
+                    property string placeholderText: "Тэг"
                     Text {
                         text: tag.placeholderText
                         color: "#aaa"
@@ -83,7 +81,7 @@ Page {
             }
             Button {
                 id: buttoncolor
-                text: "Tag color"
+                text: "Цвет тэга"
                 Layout.preferredHeight: 100
                 Layout.alignment: Qt.AlignRight
                 onClicked: {
@@ -106,7 +104,7 @@ Page {
         RowLayout {
             Button {
                 id: buttondate
-                text: "Date"
+                text: "Дата"
                 Layout.alignment: Qt.AlignLeft
                 Layout.fillWidth: true
                 onClicked: {
@@ -125,7 +123,7 @@ Page {
             }
             Button {
                 id: buttontime
-                text: "Time"
+                text: "Время"
                 Layout.alignment: Qt.AlignRight
                 Layout.fillWidth: true
                 onClicked: {
@@ -143,23 +141,23 @@ Page {
         }
         ComboBox {
             id: priorityCb
-            label: "Priority"
+            label: "Приоритет"
             Layout.alignment: Qt.AlignTop
             menu: ContextMenu {
                 MenuItem {
-                    text: "Lowest"
+                    text: "Самый низкий"
                 }
                 MenuItem {
-                    text: "Low"
+                    text: "Низкий"
                 }
                 MenuItem {
-                    text: "Medium"
+                    text: "Средний"
                 }
                 MenuItem {
-                    text: "High"
+                    text: "Высокий"
                 }
                 MenuItem {
-                    text: "Highest"
+                    text: "Самый высокий"
                 }
             }
         }

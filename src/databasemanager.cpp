@@ -24,6 +24,7 @@ bool DatabaseManager::openDatabase()
         return false;
     }
     qWarning() << _database.databaseName();
+    qDebug() << getAllReminders();
 
     // Создание таблицы, если она не существует
     createTable();
@@ -59,8 +60,19 @@ bool DatabaseManager::createTable()
 }
 
 // Метод для добавления напоминания в базу данных
-bool DatabaseManager::addReminder(const Reminder &reminder)
+bool DatabaseManager::addReminder(const QString &task,
+                                  const QString &description,
+                                  const QString &date,
+                                  const QTime &time,
+                                  const int &priority,
+                                  const QString &tag,
+                                  const QColor &color)
 {
+    QDate dateFromStr = QDate::fromString(date, "d MMM yyyy");
+
+    Reminder reminder {
+        task, description, dateFromStr, time, static_cast<Priority>(priority), { tag, color }
+    };
     QSqlQuery query;
     query.prepare("INSERT INTO reminders (taskname, description, date, time, priority, tag_name, "
                   "tag_color, completed) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
@@ -96,8 +108,19 @@ bool DatabaseManager::setCompleted(int id, bool completed)
     return true;
 }
 // Метод для обновления информации о напоминании по его идентификатору
-bool DatabaseManager::updateReminder(int id, const Reminder &reminder)
+bool DatabaseManager::updateReminder(int id,
+                                     const QString &task,
+                                     const QString &description,
+                                     const QString &date,
+                                     const QTime &time,
+                                     const int &priority,
+                                     const QString &tag,
+                                     const QColor &color)
 {
+    QDate dateFromStr = QDate::fromString(date, "d MMM yyyy");
+    Reminder reminder {
+        task, description, dateFromStr, time, static_cast<Priority>(priority), { tag, color }
+    };
     QSqlQuery query;
     query.prepare("UPDATE reminders SET taskname = ?, description = ?, date = ?, time = ?, "
                   "priority = ?, tag_name = ?, tag_color = ? WHERE id = ?");

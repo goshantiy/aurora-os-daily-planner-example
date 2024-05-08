@@ -15,14 +15,30 @@ namespace DailyPlanner {
         void closeDatabase();
 
         bool createTable();
-        bool addReminder(const Reminder &reminder);
+
         QList<QVariantMap> getAllReminders();
 
         const QSqlDatabase &database() const;
 
         bool clearRemindersTable();
-        bool updateReminder(int id, const Reminder &reminder);
+        Q_INVOKABLE bool updateReminder(int id,
+                                        const QString &task,
+                                        const QString &description,
+                                        const QString &date,
+                                        const QTime &time,
+                                        const int &priority,
+                                        const QString &tag,
+                                        const QColor &color);
+        Q_INVOKABLE bool addReminder(const QString &task,
+                                     const QString &description,
+                                     const QString &date,
+                                     const QTime &time,
+                                     const int &priority,
+                                     const QString &tag,
+                                     const QColor &color);
+        Q_INVOKABLE
         bool setCompleted(int id, bool completed);
+
     private:
         QSqlDatabase _database;
     };
