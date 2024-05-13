@@ -6,12 +6,14 @@ using namespace DailyPlanner;
 
 // Конструктор класса ReminderModel
 ReminderModel::ReminderModel(DatabaseManager *manager, const QSqlDatabase &db, QObject *parent) :
-    QSqlTableModel(parent, db), _manager(manager)
+    QSqlRelationalTableModel(parent, db), _manager(manager)
 {
     // Установка таблицы для модели
     setTable("reminders");
     //     Сортировка по приоритету в порядке убывания при создании модели
     sortByPriority(Qt::DescendingOrder);
+    setRelation(5, QSqlRelation("tag", "tag_name", "tag_name"));
+    setRelation(6, QSqlRelation("tag", "tag_color", "tag_color"));
 
     // Фильтрация по приоритету All и текущей дате при создании модели
     filterByPriorityAndDate(Priority::All, QDate::currentDate());
@@ -22,7 +24,6 @@ void ReminderModel::filterByTag(const QString &tagName)
 {
     _currentFilters.clear();
     _currentFilters.append(QString("tag_name='%1'").arg(tagName));
-    //    _currentFilters.append(QString("ORDERED by priority, completed"));
     applyFilters();
 }
 
@@ -171,6 +172,15 @@ QVariant ReminderModel::data(const QModelIndex &index, int role) const
         return record.value("id");
     default:
         return QVariant();
+    }
+}
+
+void ReminderModel::setCompleted(int id, bool completed)
+{
+    qDebug() << Q_FUNC_INFO;
+    if (_manager->setCompleted(id, completed)) {
+        select();
+        //        emit dataChanged(QModelIndex(), QModelIndex(), { ReminderRoles::Completed });
     }
 }
 

@@ -49,9 +49,17 @@ bool DatabaseManager::createTable()
                     "date DATE, "
                     "time TIME, "
                     "priority INTEGER, "
-                    "tag_name TEXT, "
-                    "tag_color TEXT, "
+                    "tag_name INTEGER, "
+                    "tag_color INTEGER, "
                     "completed INTEGER)")) {
+        qWarning() << "Error: Unable to create table" << query.lastError().text();
+        return false;
+    }
+
+    if (!query.exec("CREATE TABLE IF NOT EXISTS tag ("
+                    "id INTEGER PRIMARY KEY AUTOINCREMENT, "
+                    "tag_name TEXT,"
+                    "tag_color TEXT)")) {
         qWarning() << "Error: Unable to create table" << query.lastError().text();
         return false;
     }
@@ -73,6 +81,34 @@ bool DatabaseManager::addReminder(const QString &task,
     Reminder reminder {
         task, description, dateFromStr, time, static_cast<Priority>(priority), { tag, color }
     };
+
+    // Проверка существует ли тег в базе данных
+    QSqlQuery checkTagQuery;
+    checkTagQuery.prepare("SELECT id FROM tag WHERE tag_name = ? AND tag_color = ?");
+    checkTagQuery.addBindValue(reminder.tag.name);
+    checkTagQuery.addBindValue(reminder.tag.color.name());
+    if (!checkTagQuery.exec()) {
+        qWarning() << "Error: Unable to check tag" << checkTagQuery.lastError().text();
+        return false;
+    }
+
+    int tagId;
+    if (checkTagQuery.next()) {
+        // Тег уже существует, получаем его id
+        tagId = checkTagQuery.value(0).toInt();
+    } else {
+        // Тег не существует, добавляем его и получаем его id
+        QSqlQuery addTagQuery;
+        addTagQuery.prepare("INSERT INTO tag (tag_name, tag_color) VALUES (?, ?)");
+        addTagQuery.addBindValue(reminder.tag.name);
+        addTagQuery.addBindValue(reminder.tag.color.name());
+        if (!addTagQuery.exec()) {
+            qWarning() << "Error: Unable to add tag" << addTagQuery.lastError().text();
+            return false;
+        }
+        tagId = addTagQuery.lastInsertId().toInt();
+    }
+
     QSqlQuery query;
     query.prepare("INSERT INTO reminders (taskname, description, date, time, priority, tag_name, "
                   "tag_color, completed) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
@@ -81,8 +117,8 @@ bool DatabaseManager::addReminder(const QString &task,
     query.addBindValue(reminder.date.toString(Qt::ISODate));
     query.addBindValue(reminder.time);
     query.addBindValue(static_cast<int>(reminder.priority));
-    query.addBindValue(reminder.tag.name);
-    query.addBindValue(reminder.tag.color.name());
+    query.addBindValue(tagId); // Используем полученный id тега
+    query.addBindValue(tagId); // Используем полученный id тега
     query.addBindValue(0); // Изначально напоминание не завершено
 
     if (!query.exec()) {

@@ -64,13 +64,33 @@ SilicaListView {
                             }
                         }
                     }
+
                     Label {
+                        id: name_label
                         text: model.tag_name
                         color: "white"
                         font.pixelSize: Theme.fontSizeSmall
                         font.family: Theme.fontFamily
                         wrapMode: Label.WordWrap
                     }
+                    //                    MouseArea {
+                    //                        z: 1
+                    //                        anchors.fill: name_label
+                    //                        onClicked: {
+                    //                            pageStack.push(Qt.resolvedUrl("EditTask.qml"), {
+                    //                                               "task": model.task,
+                    //                                               "date": Qt.formatDate(
+                    //                                                           new Date(model.date),
+                    //                                                           "d MMM yyyy"),
+                    //                                               "priority": model.priority,
+                    //                                               "time": model.time,
+                    //                                               "descriptionTask": model.description,
+                    //                                               "tag_name": model.tag_name,
+                    //                                               "tag_color": model.tag_color,
+                    //                                               "completed": model.completed
+                    //                                           })
+                    //                        }
+                    //                    }
                 }
             }
             Rectangle {
@@ -125,7 +145,7 @@ SilicaListView {
                 icon.source: "image://theme/icon-l-check"
                 highlighted: model.completed
                 onClicked: {
-                    AppManager.manager.setCompleted(model.id, !model.completed)
+                    AppManager.model.setCompleted(model.id, !model.completed)
                 }
             }
         }

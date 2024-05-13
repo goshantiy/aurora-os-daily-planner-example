@@ -1,7 +1,7 @@
 #ifndef REMINDERMODEL_H
 #define REMINDERMODEL_H
 
-#include <QSqlTableModel>
+#include <QSqlRelationalTableModel>
 #include <QSqlRecord>
 #include <QObject>
 #include <QDateTime>
@@ -9,7 +9,7 @@
 #include "global.h"
 
 namespace DailyPlanner {
-    class ReminderModel : public QSqlTableModel
+    class ReminderModel : public QSqlRelationalTableModel
     {
         Q_OBJECT
     public:
@@ -37,8 +37,6 @@ namespace DailyPlanner {
         void sortByField(Qt::SortOrder order, int field);
         void filterByField(const QString &field, const QVariant &value);
 
-
-
         Q_INVOKABLE void filterByPriorityAndDate(Priority priority, const QDate &date);
 
         Q_INVOKABLE void filterByTag(const QString &tagName);
@@ -47,6 +45,8 @@ namespace DailyPlanner {
 
         Q_INVOKABLE void
         filterByCriteria(Priority priority, const QDate &date, const QString &search);
+
+        Q_INVOKABLE void setCompleted(/*int ix, */ int id, bool completed);
 
     private:
         void applyFilters();
